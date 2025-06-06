@@ -72,7 +72,8 @@ def get_tableau_token() -> str:
     """
     auth_config = ca_auth.load_config()
     jwt_token = ca_auth.generate_jwt_token(auth_config)
-    return ca_auth.authenticate_with_tableau(jwt_token, auth_config)
+    auth_response = ca_auth.authenticate_with_tableau(jwt_token, auth_config)
+    return auth_response['token']
 
 def get_tableau_content(tableau_pod: str, token: str, query: str, variables: Dict[str, str], api_version: str) -> Dict[str, Any]:
     """
