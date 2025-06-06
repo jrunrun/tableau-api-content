@@ -60,6 +60,7 @@ def generate_jwt_token(config: Dict[str, str]) -> str:
             "tableau:insights:embed",
             "tableau:content:read"
         ],
+        # not required but included as an example of RLS (Row Level Security) by organization
         "org_id": "1234567890"
     }
     headers = {
