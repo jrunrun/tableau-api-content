@@ -10,6 +10,26 @@ This project provides Python utilities for interacting with the Tableau API, inc
 - Environment-based configuration
 - Comprehensive error handling and logging
 
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd tableau-api-content
+   ```
+
+2. Create and activate a virtual environment (recommended):
+   ```bash
+   # Using venv
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 ## Configuration
 
 1. Copy `.env.example` to `.env`:
@@ -99,11 +119,23 @@ All errors are logged with detailed context for debugging.
 
 ## Dependencies
 
-- requests>=2.31.0
-- PyJWT>=2.8.0
-- python-dotenv>=1.0.0
-- typing-extensions>=4.8.0
-- python-json-logger>=2.0.7
+The project uses the following dependencies (specified in `requirements.txt`):
+
+- requests>=2.31.0: For making HTTP requests to Tableau APIs
+- PyJWT>=2.8.0: For JWT token generation and validation
+- python-dotenv>=1.0.0: For loading environment variables
+- typing-extensions>=4.8.0: For enhanced type hints
+- python-json-logger>=2.0.7: For structured JSON logging
+
+To update dependencies to their latest compatible versions:
+```bash
+pip install --upgrade -r requirements.txt
+```
+
+To generate a new requirements.txt with exact versions:
+```bash
+pip freeze > requirements.txt
+```
 
 ## Security Notes
 
