@@ -4,6 +4,7 @@ import uuid
 import requests
 import os
 import logging
+import json
 from typing import Dict, Any
 from dotenv import load_dotenv
 
@@ -58,7 +59,8 @@ def generate_jwt_token(config: Dict[str, str]) -> str:
             "tableau:views:embed",
             "tableau:insights:embed",
             "tableau:content:read"
-        ]
+        ],
+        "org_id": "1234567890"
     }
     headers = {
         'kid': config['CONNECTED_APP_SECRET_ID'],
@@ -71,9 +73,10 @@ def generate_jwt_token(config: Dict[str, str]) -> str:
         algorithm="HS256",
         headers=headers
     )
+    print(f"https://jwt.io/#token={token}")
     return token
 
-def authenticate_with_tableau(jwt_token: str, config: Dict[str, str]) -> str:
+def authenticate_with_tableau(jwt_token: str, config: Dict[str, str]) -> Dict[str, str]:
     """
     Authenticate with Tableau REST API using a JWT token.
 
@@ -82,7 +85,7 @@ def authenticate_with_tableau(jwt_token: str, config: Dict[str, str]) -> str:
         config (Dict[str, str]): Configuration dictionary.
 
     Returns:
-        str: Tableau REST API authentication token.
+        Dict[str, str]: Dictionary containing 'token' and 'site_id'.
 
     Raises:
         requests.exceptions.RequestException: If the authentication request fails.
@@ -110,7 +113,13 @@ def authenticate_with_tableau(jwt_token: str, config: Dict[str, str]) -> str:
     response = requests.post(tableau_auth_url, headers=headers, json=payload)
     response.raise_for_status()
     response_data = response.json()
-    return response_data['credentials']['token']
+    print("\nTableau Authentication Response:")
+    print(json.dumps(response_data, indent=2))
+    
+    return {
+        'token': response_data['credentials']['token'],
+        'site_id': response_data['credentials']['site']['id']
+    }
 
 def main() -> None:
     """
@@ -119,9 +128,10 @@ def main() -> None:
     try:
         config = load_config()
         jwt_token = generate_jwt_token(config)
-        tableau_rest_api_token = authenticate_with_tableau(jwt_token, config)
+        auth_response = authenticate_with_tableau(jwt_token, config)
         logger.info(f"JWT Token: {jwt_token}")
-        logger.info(f"Tableau REST API Token: {tableau_rest_api_token}")
+        logger.info(f"Tableau REST API Token: {auth_response['token']}")
+        logger.info(f"Site ID: {auth_response['site_id']}")
     except ValueError as ve:
         logger.error(f"Configuration error: {ve}")
     except requests.exceptions.RequestException as re:
